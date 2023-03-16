@@ -1,9 +1,7 @@
 #include <iostream>
 
 using namespace std;
-
 const char VUOTO = '_';
-
 int mossaPensata(char *tab)
 {
 
@@ -76,7 +74,7 @@ int mossaPensata(char *tab)
         char b = tab[combinazioni[i][1]];
         char c = tab[combinazioni[i][2]];
 
-        bool condizione = a == b && c == VUOTO && a == 'X';
+        bool condizione = a == b && c == VUOTO && a == 'O';
 
         if (condizione)
         {
@@ -90,7 +88,7 @@ int mossaPensata(char *tab)
         char b = tab[combinazioni[i][2]];
         char c = tab[combinazioni[i][1]];
 
-        bool condizione = a == b && c == VUOTO && a == 'X';
+        bool condizione = a == b && c == VUOTO && a == 'O';
 
         if (condizione)
         {
@@ -105,7 +103,7 @@ int mossaPensata(char *tab)
         char b = tab[combinazioni[i][2]];
         char c = tab[combinazioni[i][0]];
 
-        bool condizione = a == b && c == VUOTO && a == 'X';
+        bool condizione = a == b && c == VUOTO && a == 'O';
 
         if (condizione)
         {
@@ -118,44 +116,45 @@ int mossaPensata(char *tab)
         risultato = rand() % 9;
     }
 
-    std::cout << "risultato: " << risultato << std::endl;
+    cout << "risultato: " << risultato << endl;
     return risultato;
 }
-
-/*
-isWinner restituisce:
-1 per la vittoria
-0 per continuare la partita
--1 per il pareggio
-*/
+// 1 per la vittoria
+// 0 per continuare la partita
+// -1 per il pareggio
 int isWinner(char *arr)
 {
-    int combinazioni[8][3] = {
-        {0, 1, 2},
-        {3, 4, 5},
-        {6, 7, 8},
-        {0, 3, 6},
-        {1, 4, 7},
-        {2, 5, 8},
-        {0, 4, 8},
-        {2, 4, 6}};
 
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < 9; i += 3)
     {
-        int a = arr[combinazioni[i][0]];
-        int b = arr[combinazioni[i][1]];
-        int c = arr[combinazioni[i][2]];
-        if (a != VUOTO && a == b && b == c)
+        if ((arr[i] == arr[i + 1]) && (arr[i + 1] == arr[i + 2]) && (arr[i] != VUOTO)) // ho tre x vicine
         {
-            return 1;
+            return 1; // hai vinto quindi 1
         }
+    }
+    for (int i = 0; i < 3; i++)
+    {
+        if ((arr[i] == arr[i + 3]) && (arr[i + 3] == arr[i + 6]) && (arr[i] != VUOTO)) // ho tre x in colonna
+        {
+            return 1; // hai vinto quindi 1
+        }
+    }
+
+    // se li ho trovati in diagonale hai vinto =1
+    if ((arr[0] == arr[4] && arr[4] == arr[8]) && (arr[0] != VUOTO))
+    {
+        return 1;
+    }
+    if ((arr[2] == arr[4] && arr[4] == arr[6]) && (arr[2] != VUOTO))
+    {
+        return 1;
     }
 
     for (int i = 0; i < 9; i++)
     {
         if (arr[i] == VUOTO)
         {
-            return 0; // c'è ancora spazio
+            return 0;
         }
     }
 
@@ -166,16 +165,12 @@ void stampa(char *tabella)
 {
     for (int i = 0; i < 9; i++)
     {
-        std::cout << tabella[i] << " ";
+        cout << tabella[i] << " ";
         if (i == 2 || i == 5 || i == 8) // alla fine di ogni riga (3x3) vai a capo
         {
-            std::cout << std::endl;
+            cout << endl;
         }
     }
-
-    std::cout << std::endl;
-    std::cout << std::endl;
-    std::cout << std::endl;
 }
 
 int main()
@@ -203,18 +198,18 @@ int main()
             //     mossa = random() % 10;
             // }
         }
-        else // UTENTE
+        else
         {
-            std::cout << "Giocatore " << (xIsNext ? 'X' : 'O') << " inserisci la tua mossa (1-9) ";
-            std::cin >> mossa;
+            cout << "Giocatore " << (xIsNext ? 'X' : 'O') << " inserisci la tua mossa (1-9) ";
+            cin >> mossa;
             mossa--; // per capirci ;)
 
-            while (tabella[mossa] != VUOTO || (!(0 <= mossa && mossa < 9))) // controllo 2 condizioni (valido e VUOTO)
+            while (tabella[mossa] != VUOTO || (!(0 <= mossa && mossa < 9))) // controllo 2 condizioni (valido e vuoto)
             {
-                std::cout << "Non puoi inserire qui" << std::endl;
-                std::cout << "Giocatore " << (xIsNext ? 'X' : 'O') << " inserisci la tua mossa (1-9) ";
-                std::cin >> mossa;
-                mossa--; // per capirci ;)
+                cout << "Non puoi inserire qui" << endl;
+                cout << "Giocatore " << (xIsNext ? 'X' : 'O') << " inserisci la tua mossa (1-9) ";
+                cin >> mossa;
+                mossa--;
             }
         }
 
@@ -225,12 +220,12 @@ int main()
 
         if (isWinner(tabella) == 1)
         {
-            std::cout << "Hai vinto " << (xIsNext ? 'X' : 'O') << std::endl;
+            cout << "Hai vinto " << (xIsNext ? 'X' : 'O') << endl;
             break;
         }
         else if (isWinner(tabella) == -1)
         {
-            std::cout << "Pareggio" << std::endl;
+            cout << "Pareggio" << endl;
             // reset del gioco
             for (int i = 0; i < 9; i++)
             {
@@ -245,7 +240,7 @@ int main()
         }
         else
         {
-            std::cout << "Errore nella funzione isWinner" << std::endl;
+            cout << "Errore nella funzione isWinner" << endl;
         }
     }
 }
